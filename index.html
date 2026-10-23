@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Математическая викторина — 5 раундов, 30 вопросов</title>
+  <meta name="description" content="Интерактивная математическая викторина для 9–10 классов: 5 раундов, 30 вопросов, 30 секунд на ответ.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Анимированный математический фон -->
+  <div class="math-bg" id="math-bg" aria-hidden="true"></div>
+
+  <!-- Кнопка включения/выключения звука -->
+  <button class="sound-toggle" id="sound-toggle" aria-label="Выключить звук" title="Звук">🔊</button>
+
+  <main class="app">
+
+    <!-- ============ СТАРТОВЫЙ ЭКРАН ============ -->
+    <section class="screen active" id="screen-start">
+      <div class="center-wrap">
+        <div class="logo-badge" aria-hidden="true">🧮</div>
+        <h1 class="main-title">МАТЕМАТИЧЕСКАЯ<br>ВИКТОРИНА</h1>
+        <p class="subtitle">Проверь свою математическую смекалку!</p>
+        <div class="info-chips">
+          <span class="chip" id="stat-rounds"><b>5</b> раундов</span>
+          <span class="chip" id="stat-questions"><b>30</b> вопросов</span>
+          <span class="chip" id="stat-time"><b>30</b> секунд на вопрос</span>
+        </div>
+        <button class="btn" id="btn-start">Начать викторину</button>
+      </div>
+    </section>
+
+    <!-- ============ ЭКРАН НАЧАЛА РАУНДА ============ -->
+    <section class="screen" id="screen-round-intro">
+      <div class="center-wrap">
+        <p class="round-kicker" id="round-kicker">Раунд 1 из 5</p>
+        <h2 class="round-title" id="round-title">Арифметика и вычисления</h2>
+        <p class="round-motivation" id="round-motivation"></p>
+        <div class="info-chips">
+          <span class="chip" id="round-meta"></span>
+        </div>
+        <button class="btn" id="btn-start-round">Готов! Начать раунд</button>
+      </div>
+    </section>
+
+    <!-- ============ ЭКРАН ВОПРОСА ============ -->
+    <section class="screen" id="screen-question">
+      <header class="quiz-top">
+        <span class="quiz-round-name" id="quiz-round-name"></span>
+        <div class="quiz-counters">
+          <span class="counter-pill" id="quiz-counter-round"></span>
+          <span class="counter-pill" id="quiz-counter-total"></span>
+        </div>
+      </header>
+
+      <div class="progress-track" role="progressbar" aria-label="Прогресс викторины">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="timer-row">
+        <div class="timer-circle" id="timer-circle" aria-label="Оставшееся время">
+          <span class="timer-value" id="timer-value">30</span>
+        </div>
+      </div>
+
+      <div class="question-card">
+        <p class="question-text" id="question-text"></p>
+        <div class="answers" id="answers"></div>
+        <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- ============ РЕЗУЛЬТАТЫ РАУНДА ============ -->
+    <section class="screen" id="screen-round-results">
+      <div class="center-wrap">
+        <div class="result-card">
+          <h2 id="round-result-title"></h2>
+          <p class="result-sub">Итоги раунда</p>
+
+          <div class="stat-rows">
+            <div class="stat-row"><span>Правильные ответы</span><b class="v-green" id="rr-correct"></b></div>
+            <div class="stat-row"><span>Неправильные ответы</span><b class="v-red" id="rr-wrong"></b></div>
+            <div class="stat-row"><span>Без ответа (время вышло)</span><b class="v-yellow" id="rr-timeout"></b></div>
+            <div class="stat-row"><span>Результат</span><b id="rr-percent"></b></div>
+          </div>
+
+          <div class="result-bar-track" aria-hidden="true">
+            <div class="seg-ok" id="rr-bar-ok"></div>
+            <div class="seg-bad" id="rr-bar-bad"></div>
+            <div class="seg-none" id="rr-bar-none"></div>
+          </div>
+          <div class="result-bar-legend">
+            <span><span class="legend-dot" style="background:#22c55e"></span>Правильные</span>
+            <span><span class="legend-dot" style="background:#ef4444"></span>Неправильные</span>
+            <span><span class="legend-dot" style="background:#f59e0b"></span>Без ответа</span>
+          </div>
+
+          <p class="result-message" id="rr-message"></p>
+
+          <div class="result-actions">
+            <button class="btn" id="rr-next-btn">Перейти к следующему раунду</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ИТОГОВЫЕ РЕЗУЛЬТАТЫ ============ -->
+    <section class="screen" id="screen-final">
+      <div class="center-wrap">
+        <div class="result-card">
+          <h2>Викторина завершена!</h2>
+          <p class="result-sub">Твой общий результат</p>
+
+          <p class="big-score" style="text-align:center" id="final-score"></p>
+
+          <div class="stat-rows">
+            <div class="stat-row"><span>Всего вопросов</span><b id="fin-total"></b></div>
+            <div class="stat-row"><span>Правильных ответов</span><b class="v-green" id="fin-correct"></b></div>
+            <div class="stat-row"><span>Неправильных ответов (включая без ответа)</span><b class="v-red" id="fin-wrong"></b></div>
+            <div class="stat-row"><span>из них без ответа (время вышло)</span><b class="v-yellow" id="fin-timeout"></b></div>
+            <div class="stat-row"><span>Процент правильных ответов</span><b id="fin-percent"></b></div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="rounds-table">
+              <thead>
+                <tr>
+                  <th>Раунд</th>
+                  <th>Правильные</th>
+                  <th>Неправильные</th>
+                  <th>Без ответа</th>
+                  <th>Баллы</th>
+                </tr>
+              </thead>
+              <tbody id="rounds-table-body"></tbody>
+            </table>
+          </div>
+
+          <p class="result-message" id="final-message"></p>
+
+          <div class="result-actions">
+            <button class="btn" id="btn-restart">Пройти ещё раз</button>
+            <button class="btn secondary" id="btn-details">Посмотреть результаты по раундам</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ПОДРОБНАЯ СТАТИСТИКА ============ -->
+    <section class="screen" id="screen-details">
+      <div class="center-wrap">
+        <div class="result-card">
+          <h2>Результаты по вопросам</h2>
+          <p class="result-sub">Все 30 вопросов и твои ответы</p>
+
+          <div class="detail-list" id="detail-list"></div>
+
+          <div class="result-actions">
+            <button class="btn secondary" id="btn-details-back">К итогам</button>
+            <button class="btn" id="btn-details-restart">Пройти ещё раз</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
